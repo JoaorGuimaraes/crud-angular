@@ -14,7 +14,7 @@ import { CoursesService } from './../services/courses.service';
 })
 export class CoursesComponent implements OnInit {
 
-  courses$: Observable<Course[]>;
+  courses$ !: Observable<Course[]>;
 
   displayedColumns: string[] = ['name', 'category', 'actions']
 
@@ -24,20 +24,20 @@ export class CoursesComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {
+  }
 
+  ngOnInit(): void {
+    this.refresh();
+  }
+
+  refresh() {
     this.courses$ = this.coursesService.list().pipe(
       catchError(error => {
-
         this.onError("Erro ao carregar cursos!")
-
         //retorna um array vazio caso de algum erro durante a chamada do service
         return of([]);
       })
     );
-
-  }
-
-  ngOnInit(): void {
   }
 
   onError(errorMsg: string) {
@@ -48,5 +48,14 @@ export class CoursesComponent implements OnInit {
 
   onAdd() {
     this.router.navigate(['new'], {relativeTo: this.route})
+  }
+
+  onEdit(course: Course){
+    this.router.navigate(['edit', course.id], {relativeTo: this.route})
+  }
+
+  onDelete(course: Course){
+    this.coursesService.delete(course).subscribe();
+    this.refresh();
   }
 }

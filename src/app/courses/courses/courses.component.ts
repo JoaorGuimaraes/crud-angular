@@ -55,7 +55,7 @@ export class CoursesComponent implements OnInit {
   }
 
   onDelete(course: Course){
-    this.coursesService.delete(course).subscribe();
-    this.refresh();
+    this.coursesService.delete(course).subscribe(() => this.refresh());
+
   }
 }
